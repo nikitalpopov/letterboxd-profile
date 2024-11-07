@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc && esbuild src/index.ts --bundle --outfile=dist/index.js --platform=node && cpx index.html dist && cpx src/*.html dist && cpx src/*.css dist && cpx src/assets/** dist/assets"
+    "build": "echo(\"No build step\")"
   },
   "keywords": [],
   "author": "",
