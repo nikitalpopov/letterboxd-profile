@@ -1,0 +1,49 @@
+body {
+  background-color: rgb(34, 40, 47);
+  font-family: TiemposTextWeb-Semibold, Georgia, serif;
+  font-weight: 600;
+  width: 100vw;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#app {
+  display: flex;
+  gap: 24px;
+  margin: 0 16px;
+}
+
+#app, .movie-title, a {
+  color: white;
+}
+
+/* .movie-title:hover,
+a:hover {
+  color: #40bcf4;
+} */
+
+.movie {
+  display: flex;
+  gap: 8px;
+  max-width: 200px;
+  min-width: 80px;
+}
+
+.movie-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-title {
+  display: flex;
+  text-decoration: none;
+}
+
+.hidden {
+  display: none;
+}

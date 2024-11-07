@@ -1,0 +1,32 @@
+{
+  "name": "letterboxd-profile",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && esbuild src/index.ts --bundle --outfile=dist/index.js --platform=node && cpx index.html dist && cpx src/*.html dist && cpx src/*.css dist && cpx src/assets/** dist/assets"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/html-minifier-terser": "^7.0.2",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@netlify/functions": "^2.8.2",
+    "express": "^4.21.1",
+    "html-minifier-terser": "^7.2.0",
+    "jsdom": "^25.0.1",
+    "posthtml": "^0.16.6",
+    "posthtml-inline-assets": "^3.1.0",
+    "satori": "^0.11.3",
+    "satori-html": "^0.3.2",
+    "serverless-http": "^3.2.0"
+  }
+}
