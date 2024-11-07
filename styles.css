@@ -4,12 +4,14 @@ body {
   font-weight: 600;
   width: 100vw;
   height: 100vh;
+  margin: 0;
 }
 
 .container {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding: 8px;
 }
 
 #app {
@@ -37,11 +39,16 @@ a:hover {
 .movie-details {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  max-width: 157px;
 }
 
 .movie-title {
-  display: flex;
+  display: block;
   text-decoration: none;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .hidden {

@@ -119,8 +119,8 @@ export async function generateSVG(userId: string): Promise<string | undefined> {
     }
 
     return satori(html(htmlString), {
-      width: 800,
-      height: 150,
+      width: 854,
+      height: 160,
       fonts: [
         {
           name: 'TiemposText-Semibold',
