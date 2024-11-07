@@ -1,6 +1,7 @@
 [functions]
   external_node_modules = ["express", "jsdom"]
   node_bundler = "esbuild"
+  included_files = ["index.html"]
 [[redirects]]
   force = true
   from = "/api/*"
