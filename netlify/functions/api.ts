@@ -5,9 +5,9 @@ import { generateHTML, generateSVG } from '../../generator'
 const app = express()
 const router = Router()
 
-// Middleware to set Cache-Control header to expire after 1 hour
+// Middleware to set Cache-Control header to expire after 8 hours
 app.use((req, res, next) => {
-  res.set('Cache-Control', 'public, max-age=3600')
+  res.set('Cache-Control', 'public, max-age=28800')
   next()
 })
 
