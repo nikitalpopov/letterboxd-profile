@@ -1,3 +1,4 @@
+import compression from 'compression'
 import express, { Request, Response, Router } from 'express'
 import serverless from 'serverless-http'
 import { generateHTML, generateSVG } from '../../generator'
@@ -10,6 +11,8 @@ app.use((req, res, next) => {
   res.set('Cache-Control', 'public, max-age=28800')
   next()
 })
+
+app.use(compression())
 
 // Endpoint to serve HTML content
 router.get('/html/:userId', async (req: Request, res: Response) => {
