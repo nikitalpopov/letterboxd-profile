@@ -8,7 +8,7 @@ const router = Router()
 
 // Middleware to set Cache-Control header to expire after 8 hours
 app.use((req, res, next) => {
-  res.set('Cache-Control', 'public, max-age=28800')
+  res.set('Cache-Control', `public, max-age=${16 * 60 * 60}`)
   next()
 })
 

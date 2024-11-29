@@ -81,8 +81,7 @@ export async function generateHTML(userId: string): Promise<string | undefined> 
   return fetchData(`https://letterboxd.com/${userId}/films/diary/`).then(async htmlString => {
     const processed = posthtml([
       inlineAssets(),
-    ])
-      .process(htmlString)
+    ]).process(htmlString)
 
     try {
       return await processed.then(({ html: htmlString }) => {
