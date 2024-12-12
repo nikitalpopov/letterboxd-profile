@@ -32,7 +32,7 @@ async function fetchRSS(url: string): Promise<string> {
 
     const releaseYear = `<span class="release-year">${r['letterboxd:filmYear']}</span>`
 
-    const memberRating = getRatingString(parseFloat(r['letterboxd:memberRating']))
+    const memberRating = r['letterboxd:memberRating'] ? getRatingString(parseFloat(r['letterboxd:memberRating'])) : ''
     const rating = `<span class="rating">${memberRating}</span>`
 
     return `<a href="${r.link}">
