@@ -17,7 +17,7 @@ app.use(compression())
 // Endpoint to serve HTML content
 router.get('/html/:userId', async (req: Request, res: Response) => {
   const { userId } = req.params
-  const htmlContent = await generateHTML(userId)
+  const htmlContent = await generateHTML(userId, 'rss')
   res.setHeader('Content-Type', 'text/html')
   res.send(htmlContent)
 });
@@ -25,7 +25,7 @@ router.get('/html/:userId', async (req: Request, res: Response) => {
 // Endpoint to serve SVG content
 router.get('/svg/:userId', async (req: Request, res: Response) => {
   const { userId } = req.params
-  const svgContent = await generateSVG(userId)
+  const svgContent = await generateSVG(userId, 'rss')
   res.setHeader('Content-Type', 'image/svg+xml')
   res.send(svgContent)
 })

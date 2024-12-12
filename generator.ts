@@ -5,6 +5,49 @@ import posthtml from 'posthtml'
 import inlineAssets from 'posthtml-inline-assets'
 import satori from 'satori'
 import { html } from 'satori-html'
+import { rssParser } from './rssParser'
+
+const { window } = new JSDOM()
+const htmlParser = new window.DOMParser()
+
+function getRatingString(rating: number): string {
+  const fullStars = Math.floor(rating)
+  const hasHalfStar = rating % 1 !== 0
+  return '★'.repeat(fullStars) + (hasHalfStar ? '½' : '')
+}
+
+async function fetchRSS(url: string): Promise<string> {
+  const feed = await rssParser.parseURL(url)
+
+  const fourReviews = feed.items
+    .filter(i => i.guid.startsWith('letterboxd-review-') || i.guid.startsWith('letterboxd-watch-'))
+    .slice(0, 4)
+
+  const body = fourReviews.map(r => {
+    const posterEl = htmlParser.parseFromString(r.content, 'text/html').querySelector('img')
+    posterEl?.classList.add('movie-poster')
+    const poster = posterEl?.outerHTML || ''
+
+    const name = `<span class="movie-title">${r['letterboxd:filmTitle']}</span>`
+
+    const releaseYear = `<span class="release-year">${r['letterboxd:filmYear']}</span>`
+
+    const memberRating = getRatingString(parseFloat(r['letterboxd:memberRating']))
+    const rating = `<span class="rating">${memberRating}</span>`
+
+    return `<a href="${r.link}">
+      <div class="movie">
+        ${poster}
+        <div class="movie-details">
+          ${name}
+          ${releaseYear}
+          ${rating}
+        </div>
+      </div>
+    </a>`
+  }).join('')
+  return applyBody({ body })
+}
 
 async function fetchHTML(url: string): Promise<string> {
   const response = await fetch(url, { cache: "no-store" })
@@ -15,9 +58,7 @@ async function fetchHTML(url: string): Promise<string> {
 }
 
 function parseHTML(htmlString: string): Document {
-  const { window } = new JSDOM()
-  const parser = new window.DOMParser()
-  return parser.parseFromString(htmlString, 'text/html')
+  return htmlParser.parseFromString(htmlString, 'text/html')
 }
 
 async function processHTML(htmlDocument: Document): Promise<string> {
@@ -32,7 +73,8 @@ async function processHTML(htmlDocument: Document): Promise<string> {
       const posterDetails = filmDetails?.querySelector('div.linked-film-poster')
       const filmSlug = posterDetails?.getAttribute('data-film-slug')
       const posterId = posterDetails?.getAttribute('data-cache-busting-key')
-      const preview = await fetch(`https://letterboxd.com/ajax/poster/film/${filmSlug}/std/35x52/?k=${posterId}`, { cache: "no-store" }).then(r => r.text()).then(t => parseHTML(t))
+      const preview = await fetch(`https://letterboxd.com/ajax/poster/film/${filmSlug}/std/35x52/?k=${posterId}`, { cache: "no-store" })
+        .then(r => r.text()).then(t => parseHTML(t))
       poster = preview?.querySelector('img.image')?.outerHTML || ''
     }
 
@@ -77,8 +119,12 @@ async function fetchData(url: string): Promise<string> {
   }
 }
 
-export async function generateHTML(userId: string): Promise<string | undefined> {
-  return fetchData(`https://letterboxd.com/${userId}/films/diary/`).then(async htmlString => {
+export async function generateHTML(userId: string, source: 'html' | 'rss'): Promise<string | undefined> {
+  const data: Promise<string> = source === 'html'
+    ? fetchData(`https://letterboxd.com/${userId}/films/diary/`)
+    : fetchRSS(`https://letterboxd.com/${userId}/rss/`)
+
+  return data.then(async htmlString => {
     const processed = posthtml([
       inlineAssets(),
     ]).process(htmlString)
@@ -105,8 +151,8 @@ export async function generateHTML(userId: string): Promise<string | undefined> 
   })
 }
 
-export async function generateSVG(userId: string): Promise<string | undefined> {
-  return await generateHTML(userId).then(async (htmlString?: string) => {
+export async function generateSVG(userId: string, source: 'html' | 'rss'): Promise<string | undefined> {
+  return await generateHTML(userId, source).then(async (htmlString?: string) => {
     if (!htmlString) throw new Error('No HTML provided')
     return htmlString.replaceAll('★', '*').replace('<title>letterboxd profile</title>', '')
   }).then(async (htmlString: string) => {
@@ -137,4 +183,11 @@ export async function generateSVG(userId: string): Promise<string | undefined> {
   })
 }
 
-generateSVG('nikitalpopov')
+// generateSVG('nikitalpopov', 'rss').then(body => {
+//   if (!body) return
+//   fs.writeFileSync('result.svg', body)
+// })
+// generateHTML('nikitalpopov', 'rss').then(body => {
+//   if (!body) return
+//   fs.writeFileSync('result.html', body)
+// })
