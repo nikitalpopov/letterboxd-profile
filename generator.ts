@@ -18,7 +18,16 @@ function getRatingString(rating: number): string {
 }
 
 async function fetchRSS(url: string): Promise<string> {
-  const feed = await rssParser.parseURL(url)
+  let feed
+
+  try {
+    feed = await rssParser.parseURL(url)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch RSS data: ${error.message}`)
+    }
+    throw new Error(`Failed to fetch RSS data: ${error}`)
+  }
 
   const fourReviews = feed.items
     .filter(i => i.guid.startsWith('letterboxd-review-') || i.guid.startsWith('letterboxd-watch-'))

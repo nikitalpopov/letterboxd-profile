@@ -19,7 +19,17 @@ router.use('/svg/:userId', compression())
 // Endpoint to serve HTML content
 router.get('/html/:userId', async (req: Request, res: Response) => {
   const { userId } = req.params
-  const htmlContent = await generateHTML(userId, 'rss')
+
+  let htmlContent: string | undefined
+  try {
+    htmlContent = await generateHTML(userId, 'rss')
+  } catch (error) {
+    if (error instanceof Error) {
+      return void res.status(500).send(error.message)
+    }
+    return void res.status(500).send(error)
+  }
+
   res.setHeader('Content-Type', 'text/html')
   res.send(htmlContent)
 })
@@ -27,7 +37,17 @@ router.get('/html/:userId', async (req: Request, res: Response) => {
 // Endpoint to serve SVG content
 router.get('/svg/:userId', async (req: Request, res: Response) => {
   const { userId } = req.params
-  const svgContent = await generateSVG(userId, 'rss')
+
+  let svgContent: string | undefined
+  try {
+    svgContent = await generateSVG(userId, 'rss')
+  } catch (error) {
+    if (error instanceof Error) {
+      return void res.status(500).send(error.message)
+    }
+    return void res.status(500).send(error)
+  }
+
   res.setHeader('Content-Type', 'image/svg+xml')
   res.send(svgContent)
 })
@@ -35,7 +55,17 @@ router.get('/svg/:userId', async (req: Request, res: Response) => {
 // Endpoint to serve PNG content
 router.get('/png/:userId', async (req: Request, res: Response) => {
   const { userId } = req.params
-  const pngContent = await generatePNG(userId, 'rss')
+
+  let pngContent: Buffer | undefined
+  try {
+    pngContent = await generatePNG(userId, 'rss')
+  } catch (error) {
+    if (error instanceof Error) {
+      return void res.status(500).send(error.message)
+    }
+    return void res.status(500).send(error)
+  }
+
   res.setHeader('Content-Type', 'image/png')
   res.end(pngContent)
 })
