@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@netlify/functions": "^2.8.2",
+    "@resvg/resvg-js": "^2.6.2",
     "compression": "^1.7.5",
     "express": "^4.21.1",
     "html-minifier-terser": "^7.2.0",

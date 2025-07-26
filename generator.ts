@@ -1,3 +1,4 @@
+import { Resvg, ResvgRenderOptions } from '@resvg/resvg-js'
 import fs from 'fs'
 import { minify } from 'html-minifier-terser'
 import { JSDOM } from 'jsdom'
@@ -183,6 +184,34 @@ export async function generateSVG(userId: string, source: 'html' | 'rss'): Promi
   })
 }
 
+export async function generatePNG(userId: string, source: 'html' | 'rss'): Promise<Buffer | undefined> {
+  return await generateSVG(userId, source).then(async (svg: string | undefined) => {
+    if (!svg) throw new Error('No SVG provided!')
+
+    const opts = {
+      fitTo: {
+        mode: 'zoom',
+        value: 3,
+      },
+      font: {
+        loadSystemFonts: false,
+      },
+    } satisfies ResvgRenderOptions
+
+    const resvg = new Resvg(svg, opts)
+    const pngData = resvg.render()
+
+    return pngData.asPng()
+  }).then((png: Buffer) => {
+    console.log('PNG generated successfully!')
+    return png
+  })
+}
+
+// generatePNG('nikitalpopov', 'rss').then(body => {
+//   if (!body) return
+//   fs.writeFileSync('result.png', body)
+// })
 // generateSVG('nikitalpopov', 'rss').then(body => {
 //   if (!body) return
 //   fs.writeFileSync('result.svg', body)
